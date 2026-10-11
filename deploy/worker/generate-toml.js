@@ -11,7 +11,7 @@
  *                     type 默认 text；secret 单独生成文件供部署后批量上传
  */
 
-import { appendFileSync, writeFileSync } from 'fs';
+import { appendFileSync, readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -20,6 +20,9 @@ const outputPath = join(__dirname, 'wrangler.toml');
 
 const env = process.env;
 const name = env.WORKER_NAME || 'cloudflare-imgbed';
+const originalConfig = readFileSync(outputPath, 'utf8');
+const configuredDatabaseId = originalConfig.match(/^database_id\s*=\s*"([^"]+)"/m)?.[1];
+const databaseId = env.D1_DATABASE_ID || configuredDatabaseId;
 
 // 先验证全部配置，避免错误的 secret 配置被降级成普通变量或被静默跳过。
 const textVars = Object.create(null);
@@ -72,15 +75,27 @@ not_found_handling = "single-page-application"
 
 [images]
 binding = "IMAGES"
+
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1.0
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 1.0
 `;
 
 // D1 数据库
-if (env.D1_DATABASE_ID) {
+if (databaseId) {
     toml += `
 [[d1_databases]]
 binding = "img_d1"
 database_name = "img_asia"
-database_id = "${env.D1_DATABASE_ID}"
+database_id = "${databaseId}"
 `;
 }
 
