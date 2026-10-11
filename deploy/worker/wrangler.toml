@@ -35,7 +35,7 @@ not_found_handling = "single-page-application"
 
 [d1_databases]
 binding = "img_d1"
-database_name = "img_aisa"
+database_name = "img_asia"
 database_id = "e5ca20e5-2e83-472c-8a1b-7051c142b7a8"
 
 # [[r2_buckets]]
