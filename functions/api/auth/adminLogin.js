@@ -26,15 +26,12 @@ export async function onRequestPost(context) {
     const passwordConfigured = !!(adminPassword && adminPassword.trim());
     const adminConfigured = usernameConfigured || passwordConfigured;
 
-    // 管理员未配置，无需认证，直接创建会话
-    if (!adminConfigured) {
-        const { cookie } = await createSession(env, 'admin');
-        return new Response(JSON.stringify({ success: true }), {
-            status: 200,
-            headers: {
-                'Content-Type': 'application/json',
-                'Set-Cookie': cookie,
-            },
+    // Never issue administrator sessions when credentials are absent.
+    // Configure BASIC_USER and BASIC_PASS as Worker secrets for first-time setup.
+    if (!adminConfigured || !passwordConfigured) {
+        return new Response(JSON.stringify({ error: 'Administrator password is not configured' }), {
+            status: 503,
+            headers: { 'Content-Type': 'application/json' },
         });
     }
 
