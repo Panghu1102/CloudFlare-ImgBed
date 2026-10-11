@@ -25,7 +25,9 @@ export async function onRequestGet(context) {
     const userAuthCode = securityConfig.auth.user.authCode;
 
     const adminRequired = !!(adminUsername && adminUsername.trim()) || !!(adminPassword && adminPassword.trim());
-    const userRequired = !!(userAuthCode && userAuthCode.trim());
+    // Upload access is protected even when the password is missing.
+    // Display the login guard rather than silently exposing the uploader.
+    const userRequired = true;
 
     // 检查会话
     const sessionResult = await validateAnySession(env, request);
