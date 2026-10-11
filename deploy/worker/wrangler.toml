@@ -35,7 +35,19 @@ binding = "IMAGES"
 
 [[d1_databases]]
 binding = "img_d1"
-database_id = "e5ca20e5-2e83-472c-8a1b-7051c142b7a8"
+database_id = "e5ca20e5-2e83-472c-8a1b-7051c142b7a8"  
+
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1.0
+
+[observability.traces]
+enabled = true
+head_sampling_rate = 1.0
 
 # [[r2_buckets]]
 # binding = "img_r2"
