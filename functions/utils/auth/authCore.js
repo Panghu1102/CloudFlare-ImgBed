@@ -33,7 +33,7 @@ const UNAUTHORIZED = { authorized: false, authType: null };
  */
 async function checkAdmin({ env, request, adminConfigured }) {
     if (!adminConfigured) {
-        return AUTHORIZED('admin'); // 未配置管理员认证，视为管理员身份放行
+        return null; // 未配置管理员认证时禁止匿名提升为管理员
     }
 
     const session = await validateSession(env, request, 'admin');
@@ -120,8 +120,7 @@ export async function authenticate({
     if (requiredPermission === 'upload' && !authCodeConfigured) {
         const adminSession = await validateSession(env, request, 'admin');
         if (adminSession.valid) return AUTHORIZED('admin');
-        const userSession = await validateSession(env, request, 'user');
-        if (userSession.valid) return AUTHORIZED('user');
+        // Do not trust old user sessions created while password protection was absent.
         return UNAUTHORIZED;
     }
 
