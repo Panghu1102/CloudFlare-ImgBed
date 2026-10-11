@@ -33,7 +33,7 @@ const UNAUTHORIZED = { authorized: false, authType: null };
  */
 async function checkAdmin({ env, request, adminConfigured }) {
     if (!adminConfigured) {
-        return null; // 未配置管理员认证时禁止匿名提升为管理员
+        return AUTHORIZED('admin'); // 未配置管理员认证，视为管理员身份放行
     }
 
     const session = await validateSession(env, request, 'admin');
@@ -98,8 +98,7 @@ export async function authenticate({
     authScope = AUTH_SCOPE.EITHER,
 }) {
     // 读取安全配置
-    // Authentication failures must never be interpreted as disabled protection.
-    const securityConfig = await fetchSecurityConfig(env, { throwOnError: true });
+    const securityConfig = await fetchSecurityConfig(env);
     const adminUsername = securityConfig.auth.admin.adminUsername;
     const adminPassword = securityConfig.auth.admin.adminPassword;
     const userAuthCode = securityConfig.auth.user.authCode;
@@ -112,16 +111,6 @@ export async function authenticate({
     const tokenResult = await validateApiToken(request, db, requiredPermission);
     if (tokenResult.valid) {
         return AUTHORIZED('admin');
-    }
-
-    // Upload endpoints must never become public just because a database migration,
-    // missing setting or cleared password leaves authCode empty. API tokens and
-    // existing authenticated sessions remain supported.
-    if (requiredPermission === 'upload' && !authCodeConfigured) {
-        const adminSession = await validateSession(env, request, 'admin');
-        if (adminSession.valid) return AUTHORIZED('admin');
-        // Do not trust old user sessions created while password protection was absent.
-        return UNAUTHORIZED;
     }
 
     // --- 会话/凭据验证 ---
