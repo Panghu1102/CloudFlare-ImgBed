@@ -25,8 +25,8 @@ binding = "ASSETS"
 not_found_handling = "single-page-application"
 
 # Cloudflare Images 原生图片处理
-# [images]
-# binding = "IMAGES"
+[images]
+binding = "IMAGES"
 
 [vars]
 # AI_CONFIG_SECRET 请配置为 Secret，值为至少 32 个字符的随机密钥。
