@@ -18,6 +18,10 @@ export async function onRequestPost(context) {
         return new Response('Security config unavailable', { status: 503 });
     }
     const rightAuthCode = securityConfig.auth.user.authCode;
+    // Never mint an upload-capable user session when no password is configured.
+    if (typeof rightAuthCode !== 'string' || !rightAuthCode.trim()) {
+        return new Response('Upload password is not configured', { status: 503 });
+    }
 
     // 验证 authCode（兼容明文、SHA-256 和 PBKDF2 三种存储格式）
     if (rightAuthCode !== undefined && rightAuthCode !== '') {
