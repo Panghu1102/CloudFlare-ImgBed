@@ -25,17 +25,17 @@ binding = "ASSETS"
 not_found_handling = "single-page-application"
 
 # Cloudflare Images 原生图片处理
-[images]
-binding = "IMAGES"
+# [images]
+# binding = "IMAGES"
 
 [vars]
 # AI_CONFIG_SECRET 请配置为 Secret，值为至少 32 个字符的随机密钥。
 # TG_BOT_TOKEN = ""
 # TG_CHAT_ID = ""
 
-[[d1_databases]]
+[d1_databases]
 binding = "img_d1"
-database_name = "img_d1"
+database_name = "img_aisa"
 database_id = "e5ca20e5-2e83-472c-8a1b-7051c142b7a8"
 
 # [[r2_buckets]]
