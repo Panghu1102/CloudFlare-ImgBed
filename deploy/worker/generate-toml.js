@@ -79,7 +79,7 @@ if (env.D1_DATABASE_ID) {
     toml += `
 [[d1_databases]]
 binding = "img_d1"
-database_name = "img_d1"
+database_name = "img_asia"
 database_id = "${env.D1_DATABASE_ID}"
 `;
 }
